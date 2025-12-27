@@ -1,0 +1,11 @@
+# Treinamento/Validação/Teste
+path: ../../CNN-pesquisa/data/dataset-fragmentado/  # Diretório raiz
+train: ${variavel}/train # Diretório das imagens de treinamento
+val: ${variavel}/train  # Diretorio das imagens de validação
+test: ${variavel}/test  # Diretorio das imagens de teste
+
+# Nome das classes
+names:
+  0: estagio-inicial
+  1: estagio-intermediario
+  2: estagio-avancado

@@ -102,6 +102,9 @@ from .transformer import (
     TransformerLayer,
 )
 
+from .mpe import PEC, ESC2f, MFI
+from .vegindex import VegIndexLayer
+
 __all__ = (
     "Conv",
     "Conv2",
@@ -179,4 +182,8 @@ __all__ = (
     "TorchVision",
     "Index",
     "A2C2f",
+    "PEC",
+    "ESC2f",
+    "MFI",
+    "VegIndexLayer",
 )

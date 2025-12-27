@@ -93,6 +93,10 @@ from ultralytics.utils.torch_utils import (
     time_sync,
 )
 
+from ultralytics.nn.modules.mpe import PEC, ESC2f, MFI
+
+from ultralytics.nn.modules.vegindex import VegIndexLayer
+globals()['VegIndexLayer'] = VegIndexLayer
 
 class BaseModel(torch.nn.Module):
     """
@@ -372,7 +376,7 @@ class DetectionModel(BaseModel):
         >>> results = model.predict(image_tensor)
     """
 
-    def __init__(self, cfg="yolo11n.yaml", ch=3, nc=None, verbose=True):
+    def __init__(self, cfg="yolo11n.yaml", ch=4, nc=None, verbose=True):
         """
         Initialize the YOLO detection model with the given config and parameters.
 

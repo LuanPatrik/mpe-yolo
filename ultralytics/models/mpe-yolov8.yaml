@@ -1,0 +1,40 @@
+# mpe-yolov8.yaml — versão sugerida (P2=160, P3=80, P4=40)
+
+nc: 3 # numero de classes
+ch: 4 #numero de canais de entrada com VegIndexLayer
+
+scales:
+  n: [0.70, 0.50, 640]
+
+backbone:
+  - [-1, 1, VegIndexLayer, []] # 0: add ExG, output 4 channels
+  - [-1, 1, Conv, [64, 3, 2]] # 1: 640->320
+  - [-1, 1, PEC, []] # 2: enhanced P1/2
+  - [-1, 1, Conv, [128, 3, 2]] # 3: 320->160 (P2)
+  - [-1, 3, ESC2f, []] # 4: P2 enhanced
+  - [-1, 1, Conv, [256, 3, 2]] # 5: 160->80 (P3)
+  - [-1, 3, ESC2f, []] # 6: P3 enhanced
+  - [-1, 1, Conv, [512, 3, 2]] # 7: 80->40 (P4)
+  - [-1, 3, ESC2f, []] # 8: P4 enhanced
+  - [-1, 1, MFI, []] # 9: multilevel fuse
+  - [-1, 1, SPPF, [512, 5]] # 10
+
+
+head:
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]] # 11: upsample P4->80
+  - [[-1, 6], 1, Concat, [1]] # 12: cat with backbone P3
+  - [-1, 3, ESC2f, []] # 13: P3 head
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]] # 14: upsample -> 160
+  - [[-1, 4], 1, Concat, [1]] # 15: cat with backbone P2
+  - [-1, 3, ESC2f, []] # 16: P2 head
+
+  - [-1, 1, Conv, [256, 3, 2]] # 17: downsample P2->P3
+  - [[-1, 13], 1, Concat, [1]] # 18: cat head P3
+  - [-1, 3, ESC2f, []] # 19: P3 refinement
+
+  - [-1, 1, Conv, [512, 3, 2]] # 20: downsample P3->P4
+  - [[-1, 10], 1, Concat, [1]] # 21: cat head P4
+  - [-1, 3, ESC2f, []] # 22: P4 refinement
+
+  - [[16, 19, 22], 1, Detect, [nc]] # 23: Detect(P2=160, P3=80, P4=40)

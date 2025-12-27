@@ -1,0 +1,8 @@
+names:
+  0: estagio-inicial
+  1: estagio-intermediario
+  2: estagio-avancado
+path: ../../CNN-pesquisa/data/dataset-fragmentado/
+test: img/test
+train: img/train
+val: img/train

@@ -162,7 +162,9 @@ class DetectionTrainer(BaseTrainer):
         Returns:
             (DetectionModel): YOLO detection model.
         """
-        model = DetectionModel(cfg, nc=self.data["nc"], ch=self.data["channels"], verbose=verbose and RANK == -1)
+	# Implmentação original com apenas tres canais e o de baixo seria com o indice de vegetacao
+        model = DetectionModel(cfg, nc=self.data["nc"], verbose=verbose and RANK == -1)
+        #model = DetectionModel(cfg, nc=self.data["nc"], ch=self.data["channels"], verbose=verbose and RANK == -1)
         if weights:
             model.load(weights)
         return model
