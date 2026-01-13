@@ -1,4 +1,5 @@
 import torch
+
 from ultralytics.nn.modules.mpe import VegIndexLayer
 
 layer = VegIndexLayer()
