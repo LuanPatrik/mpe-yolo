@@ -1,20 +1,18 @@
-import torch
-import numpy as np
 import cv2
+import numpy as np
+import torch
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
-from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 
 from ultralytics import RTDETR
+
 
 class RTDETRClassTarget:
     def __init__(self, class_id):
         self.class_id = class_id
 
     def __call__(self, model_output):
-        """
-        model_output: saída do RT-DETR
-        Retorna um ESCALAR
+        """model_output: saída do RT-DETR Retorna um ESCALAR.
         """
         # model_output[0]: scores do decoder
         # shape típico: [num_queries, num_classes]
@@ -32,9 +30,9 @@ model.model.eval()
 model.model.requires_grad_(True)
 
 # Identifica qual camada será utilizada
-#for name, module in model.model.named_modules():
+# for name, module in model.model.named_modules():
 #    print(name)
-    
+
 target_layer = model.model.model[27].cv3
 
 # Carregar imagem
@@ -52,23 +50,18 @@ input_tensor = input_tensor.requires_grad_(True)
 cam = GradCAM(
     model=model.model,
     target_layers=[target_layer],
-    #use_cuda= False torch.cuda.is_available()
+    # use_cuda= False torch.cuda.is_available()
 )
 
 num_classes = 3
 
 for class_id in range(num_classes):
-
     # classe alvo
     targets = [RTDETRClassTarget(class_id)]
 
-    grayscale_cam = cam(
-        input_tensor=input_tensor,
-        targets=targets
-    )[0]
+    grayscale_cam = cam(input_tensor=input_tensor, targets=targets)[0]
 
     # Overlay
     visualization = show_cam_on_image(img_norm, grayscale_cam, use_rgb=True)
 
-    cv2.imwrite(f"heatmap_rtdetr_classe_{class_id}.jpg",
-                cv2.cvtColor(visualization, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(f"heatmap_rtdetr_classe_{class_id}.jpg", cv2.cvtColor(visualization, cv2.COLOR_RGB2BGR))
